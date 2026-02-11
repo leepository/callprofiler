@@ -1,6 +1,7 @@
 """Profiling decorator and sys.setprofile hook."""
 
 import functools
+import inspect
 import os
 import sys
 import sysconfig
@@ -72,12 +73,9 @@ def profile(
     if func is None:
         return lambda f: profile(f, output_dir=output_dir)
 
-    @functools.wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
-        events: list[dict] = []
-        start_ns = time.perf_counter_ns()
-        profiler_module = __name__
+    profiler_module = __name__
 
+    def _make_callback(events: list[dict]) -> Callable:
         def _profile_callback(frame: Any, event: str, arg: Any) -> None:
             ts = time.perf_counter_ns()
 
@@ -86,7 +84,6 @@ def profile(
                 filename = code.co_filename
                 mod = frame.f_globals.get("__name__", "")
 
-                # Skip callprofiler's own frames
                 if mod == profiler_module:
                     return
 
@@ -109,7 +106,6 @@ def profile(
                 c_func_name = getattr(arg, "__name__", str(arg))
                 c_module = getattr(arg, "__module__", "") or ""
 
-                # Skip sys.setprofile itself (called during teardown)
                 if c_func_name == "setprofile":
                     return
 
@@ -128,22 +124,51 @@ def profile(
                     }
                 )
 
-        sys.setprofile(_profile_callback)
+        return _profile_callback
+
+    def _save_report(events: list[dict], start_ns: int, end_ns: int) -> None:
+        if events:
+            html = process_events(events, func.__name__, start_ns, end_ns)
+            out_path = Path(output_dir)
+            out_path.mkdir(parents=True, exist_ok=True)
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            report_file = out_path / f"{func.__name__}_{timestamp}.html"
+            report_file.write_text(html, encoding="utf-8")
+            print(f"[callprofiler] Report saved to {report_file}")
+
+    if inspect.iscoroutinefunction(func):
+
+        @functools.wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+            events: list[dict] = []
+            start_ns = time.perf_counter_ns()
+            callback = _make_callback(events)
+
+            sys.setprofile(callback)
+            try:
+                result = await func(*args, **kwargs)
+            finally:
+                sys.setprofile(None)
+                end_ns = time.perf_counter_ns()
+                _save_report(events, start_ns, end_ns)
+
+            return result
+
+        return async_wrapper
+
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        events: list[dict] = []
+        start_ns = time.perf_counter_ns()
+        callback = _make_callback(events)
+
+        sys.setprofile(callback)
         try:
             result = func(*args, **kwargs)
         finally:
             sys.setprofile(None)
             end_ns = time.perf_counter_ns()
-
-            if events:
-                html = process_events(events, func.__name__, start_ns, end_ns)
-
-                out_path = Path(output_dir)
-                out_path.mkdir(parents=True, exist_ok=True)
-                timestamp = time.strftime("%Y%m%d_%H%M%S")
-                report_file = out_path / f"{func.__name__}_{timestamp}.html"
-                report_file.write_text(html, encoding="utf-8")
-                print(f"[callprofiler] Report saved to {report_file}")
+            _save_report(events, start_ns, end_ns)
 
         return result
 
