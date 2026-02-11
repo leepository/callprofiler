@@ -1,0 +1,109 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-02-11T06:35:11.092Z",
+  "activeFeatures": [
+    "callprofiler",
+    "python-package"
+  ],
+  "primaryFeature": "callprofiler",
+  "features": {
+    "callprofiler": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-11T06:25:45.725Z",
+        "lastUpdated": "2026-02-11T06:34:45.410Z"
+      },
+      "lastFile": "/Users/kevin/work/rust/python-package/python/callprofiler/profiler.py"
+    },
+    "python-package": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-11T06:26:12.306Z",
+        "lastUpdated": "2026-02-11T06:35:11.092Z"
+      },
+      "lastFile": "/Users/kevin/work/rust/python-package/src/call_node.rs"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-02-11T02:40:18.734Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-02-11T06:35:11.092Z"
+  },
+  "history": [
+    {
+      "timestamp": "2026-02-11T06:25:45.725Z",
+      "feature": "callprofiler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:25:45.793Z",
+      "feature": "callprofiler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:26:12.306Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:26:49.018Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:27:00.333Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:33:13.914Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:33:17.578Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:33:25.837Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:34:45.410Z",
+      "feature": "callprofiler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-11T06:35:11.092Z",
+      "feature": "python-package",
+      "phase": "do",
+      "action": "updated"
+    }
+  ]
+}
