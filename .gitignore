@@ -73,3 +73,6 @@ docs/_build/
 
 # Profiler output
 .profile/
+
+# bkit
+.bkit-memory.json
